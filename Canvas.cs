@@ -16,8 +16,8 @@ namespace Progbase
         #region Fields
         private byte[,] canvas = null;
         private byte currentColor = 0;
-        private int originRow = 1;
-        private int originColumn = 1;
+        private int originRow = 0;
+        private int originColumn = 0;
         private int width = 1;
         private int height = 1;
         private bool isDrawing = false;
@@ -255,7 +255,37 @@ namespace Progbase
         {
             if (!isDrawing) throw new InvalidOperationException("Not drawing");
 
-            StrokeEllipse(x0, y0, radius, radius);
+            int x = radius - 1;
+            int y = 0;
+            int dx = 1;
+            int dy = 1;
+            int err = dx - (radius << 1);
+
+            while (x >= y)
+            {
+                PutPixel(x0 + x, y0 + y);
+                PutPixel(x0 + y, y0 + x);
+                PutPixel(x0 - y, y0 + x);
+                PutPixel(x0 - x, y0 + y);
+                PutPixel(x0 - x, y0 - y);
+                PutPixel(x0 - y, y0 - x);
+                PutPixel(x0 + y, y0 - x);
+                PutPixel(x0 + x, y0 - y);
+
+                if (err <= 0)
+                {
+                    y++;
+                    err += dy;
+                    dy += 2;
+                }
+
+                if (err > 0)
+                {
+                    x--;
+                    dx += 2;
+                    err += dx - (radius << 1);
+                }
+            }
         }
 
         public void FillCircle(int x0, int y0, int radius)
@@ -264,7 +294,16 @@ namespace Progbase
 
             if (radius <= 0) throw new ArgumentOutOfRangeException(nameof(radius));
 
-            FillEllipse(x0, y0, radius, radius);
+            for (int y = -radius; y <= radius; y++)
+            {
+                for (int x = -radius; x <= radius; x++)
+                {
+                    if ((x * x) + (y * y) <= (radius * radius))
+                    {
+                        PutPixel(x0 + x, y0 + y);
+                    }
+                }
+            }
         }
 
         public void StrokeEllipse(int cx, int cy, int a, int b)
@@ -281,7 +320,7 @@ namespace Progbase
             {
                 double x = a * Math.Cos(tmp_angle);
                 double y = b * Math.Sin(tmp_angle);
-                PutPixel((int)(x + cx), (int)(y + cy));
+                PutPixel((int)Math.Round(x + cx), (int)Math.Round(y + cy));
             }
         }
 
@@ -296,9 +335,9 @@ namespace Progbase
             {
                 for (float y = -b; y < b; y++)
                 {
-                    if (x * x / (a * a) + y * y / (b * b) <= 1)
+                    if ((x * x) / (a * a) + (y * y) / (b * b) <= 1)
                     {
-                        PutPixel((int)(x + cx), (int)(y + cy));
+                        PutPixel((int)Math.Round(x + cx), (int)Math.Round(y + cy));
                     }
                 }
             }
