@@ -9,6 +9,7 @@ namespace Progbase
         private const byte BlackColor = 0;
         private const string SetBackgroundColorFormat = "\x1b[48;5;{0}m";
         private const string SetForegroundColorFormat = "\x1b[38;5;{0}m";
+        private const string ResetColor = "\x1b[39m";
         private const char UpperHalfBlock = '▀';
         #endregion
 
@@ -149,6 +150,7 @@ namespace Progbase
                     Console.WriteLine();
                 }
             }
+            Console.Write(ResetColor);
             Console.ResetColor();
             Console.CursorVisible = true;
 
