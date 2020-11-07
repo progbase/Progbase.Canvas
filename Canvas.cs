@@ -11,13 +11,15 @@ namespace Progbase
         private const string SetForegroundColorFormat = "\x1b[38;5;{0}m";
         private const string ResetColor = "\x1b[39m";
         private const char UpperHalfBlock = '▀';
+        private const int minOriginRow = 0;
+        private const int minOriginColumn = 0;
         #endregion
 
         #region Fields
         private byte[,] canvas = null;
         private byte currentColor = 0;
-        private int originRow = 0;
-        private int originColumn = 0;
+        private int originRow = minOriginRow;
+        private int originColumn = minOriginColumn;
         private int width = 1;
         private int height = 1;
         private bool isDrawing = false;
@@ -32,8 +34,8 @@ namespace Progbase
         {
             if (isDrawing) throw new InvalidOperationException("Can't set origin when drawing");
 
-            if (conRow < 0) throw new ArgumentOutOfRangeException(nameof(conRow));
-            if (conColumn < 0) throw new ArgumentOutOfRangeException(nameof(conColumn));
+            if (conRow < minOriginRow) throw new ArgumentOutOfRangeException(nameof(conRow));
+            if (conColumn < minOriginColumn) throw new ArgumentOutOfRangeException(nameof(conColumn));
             originRow = conRow;
             originColumn = conColumn;
         }
@@ -110,7 +112,7 @@ namespace Progbase
             int rColorUpper = -1;
             int rColorLower = -1;
 
-            bool setPosManually = originRow > 0 || originColumn > 0;
+            bool setPosManually = originRow >= minOriginRow || originColumn >= minOriginColumn;
 
             int y;
             for (int yi = 0; yi < height / 2; yi++)

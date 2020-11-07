@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>Progbase.Canvas</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>rhadyniak</Authors>
     <Company>Progbase</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
